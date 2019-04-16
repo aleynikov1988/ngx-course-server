@@ -17,7 +17,7 @@ export class AuthService {
     const secret: string = this._config.get('secret');
     const { username } = user;
 
-    const payload: any = {
+    const payload: {username: string} = {
       username,
     };
 
