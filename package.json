@@ -5,13 +5,13 @@
     "author": "",
     "license": "MIT",
     "scripts": {
-        "build": "tsc -p tsconfig.build.json",
+        "build": "rm -rf dist && tsc -p tsconfig.build.json",
         "postinstall": "npm run prestart:prod",
         "format": "prettier --write \"src/**/*.ts\"",
-        "start": "nodemon",
+        "start": "ts-node -r tsconfig-paths/register src/main.ts",
         "start:dev": "nodemon",
         "start:debug": "nodemon --config nodemon-debug.json",
-        "prestart:prod": "rimraf dist && npm run build",
+        "heroku-postbuild": "npm install --only=dev --no-shrinkwrap && npm run build",
         "start:prod": "node dist/main.js",
         "lint": "tslint -p tsconfig.json -c tslint.json",
         "test": "jest",
@@ -37,7 +37,6 @@
         "rxjs": "^6.3.3",
         "swagger-ui-express": "^4.0.2",
         "typescript": "^3.2.4"
-
     },
     "devDependencies": {
         "@nestjs/testing": "^6.0.0",
@@ -72,6 +71,6 @@
         "testEnvironment": "node"
     },
     "engines": {
-    "node": "10.15.1"
+        "node": "10.15.1"
     }
 }
