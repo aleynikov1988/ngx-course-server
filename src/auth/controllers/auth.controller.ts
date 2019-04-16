@@ -1,4 +1,4 @@
-import { CreateUserDto } from './../dto/create-user.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
@@ -10,9 +10,7 @@ import { AuthService } from '../services/auth.service';
 @ApiUseTags('auth')
 @Controller('auth')
 export class AuthController {
-    public constructor(
-        private readonly _authService: AuthService,
-    ) { }
+    public constructor(private readonly _authService: AuthService) {}
 
     @Post('signup')
     @ApiOperation({ title: 'User sign up (create user)' })
@@ -23,7 +21,8 @@ export class AuthController {
             const { username, email } = createUserDto;
             const user: IUser | null = await this._authService.getUser({ $or: [{ username }, { email }] });
             if (user) {
-                return res.status(HttpStatus.CONFLICT)
+                return res
+                    .status(HttpStatus.CONFLICT)
                     .json({ data: null, error: 'Invalid username or email already exists' });
             }
             const hash: string = await bcrypt.hash(createUserDto.password, 10);
@@ -46,8 +45,8 @@ export class AuthController {
         try {
             const { username, password: lpassword } = loginUserDto;
             const { password, ...user }: User = await this._authService.getUserWithToken({ username });
-
-            if (!user || user && !await bcrypt.compare(lpassword, password)) {
+            if (!user || (user && !(await bcrypt.compare(lpassword, password)))) {
+                console.log(user);
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     data: null,
                     error: 'Invalid username and/or password',
@@ -55,8 +54,8 @@ export class AuthController {
             }
             return res.status(HttpStatus.OK).json({ data: user, error: null });
         } catch (error) {
+            console.log(error);
             return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'Invalid username and/or password' });
         }
-
     }
 }
