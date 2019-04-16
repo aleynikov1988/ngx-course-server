@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  server:
+    container_name: course-app-server
+    build: docker/server
+    ports:
+      - 8090:8090
+      - 5858:5858
+    volumes:
+      - ./:/var/www/course-app-server
+    environment:
+      - COMPOSE_HTTP_TIMEOUT=300
+    tty: true
+    networks:
+      -  course-app-network
+
+  mongodb:
+    image: mongo:latest
+    container_name: angular-course-mongodb
+    ports:
+      - 27017:27017
+    networks:
+      - course-app-network
+
+networks:
+  course-app-network:
+   external: true
