@@ -30,7 +30,7 @@ export class AuthController {
                 ...createUserDto,
                 password: hash,
             };
-            const { password, ...newUser }: User = (await this._authService.createUser(userForCreate)).toObject();
+            const { password, ...newUser }: User = await this._authService.createUser(userForCreate);
             return res.status(HttpStatus.OK).json({ data: newUser, error: null });
         } catch (error) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error });
