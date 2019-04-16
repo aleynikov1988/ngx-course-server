@@ -35,7 +35,9 @@
         "reflect-metadata": "^0.1.12",
         "rimraf": "^2.6.2",
         "rxjs": "^6.3.3",
-        "swagger-ui-express": "^4.0.2"
+        "swagger-ui-express": "^4.0.2",
+        "typescript": "^3.2.4"
+
     },
     "devDependencies": {
         "@nestjs/testing": "^6.0.0",
@@ -68,5 +70,8 @@
         },
         "coverageDirectory": "../coverage",
         "testEnvironment": "node"
+    },
+    "engines": {
+    "node": "10.15.1"
     }
 }
