@@ -38,7 +38,8 @@
         "rxjs": "^6.4.0",
         "swagger-ui-express": "^4.0.2",
         "typescript": "^3.4.3",
-        "ts-node": "^8.1.0"
+        "ts-node": "^8.1.0",
+        "tsconfig-paths": "^3.8.0"
     },
     "devDependencies": {
         "@nestjs/testing": "^6.1.1",
