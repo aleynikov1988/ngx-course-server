@@ -27,6 +27,8 @@
         "@nestjs/platform-express": "^6.1.1",
         "@nestjs/swagger": "3.0.2",
         "@types/dotenv": "^6.1.1",
+        "@types/passport-jwt": "^3.0.1",
+        "@types/request-promise": "^4.1.42",
         "bcrypt": "^3.0.6",
         "config": "^3.1.0",
         "dotenv": "^7.0.0",
@@ -34,12 +36,14 @@
         "passport": "^0.4.0",
         "passport-jwt": "^4.0.0",
         "reflect-metadata": "^0.1.13",
+        "request": "^2.88.0",
+        "request-promise": "^4.2.4",
         "rimraf": "^2.6.3",
         "rxjs": "^6.4.0",
         "swagger-ui-express": "^4.0.2",
-        "typescript": "^3.4.3",
         "ts-node": "^8.1.0",
-        "tsconfig-paths": "^3.8.0"
+        "tsconfig-paths": "^3.8.0",
+        "typescript": "^3.4.3"
     },
     "devDependencies": {
         "@nestjs/testing": "^6.1.1",
