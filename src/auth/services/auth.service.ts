@@ -82,4 +82,9 @@ export class AuthService {
             .lean()
             .exec();
     }
+
+    // tslint:disable-next-line: no-any
+    public async devicesUser(email: string, userForUpdate: any): Promise<IUser | null> {
+        return await this._userModel.findOneAndUpdate({ email }, { $set: userForUpdate });
+    }
 }
