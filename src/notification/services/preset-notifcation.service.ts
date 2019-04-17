@@ -1,11 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
-import request from 'request-promise';
+import * as request from 'request-promise';
 import { AuthService } from '../../auth/services/auth.service';
 import { IUser } from '../../auth/schemas/user.schema';
 import { INotificationLog } from '../shcemas/notification-log.schema';
 
-type NotifyStatus = { status: 'pending' | 'success' | 'error' };
 type NotifyData = {
     payload: string;
     author?: mongoose.Types.ObjectId[];
@@ -20,17 +19,13 @@ export class PresetNotificationsLogService {
     ) {}
 
     public async notify(
-        notification: { title: string; body: string },
         data: NotifyData,
         // tslint:disable-next-line:no-any
         usersArr: { _id: any }[]
     ): Promise<void> {
         try {
-            const notifyType: NotifyStatus = { status: 'pending' };
             // tslint:disable-next-line
             const notificationObj: any = {
-                ...notifyType,
-                notification,
                 data,
                 users: usersArr.map((user: { // tslint:disable-next-line:no-any
                     _id: any }) => ({ _id: user._id.toString(), status: false })),

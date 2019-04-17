@@ -7,6 +7,7 @@ import { ConfigService } from '../../config.service';
 
 @Injectable()
 export class JwtStrategy extends Strategy {
+    // @ts-ignore
     public constructor(private readonly _authService: AuthService, private readonly _config: ConfigService) {
         super(
             {

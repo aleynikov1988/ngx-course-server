@@ -2,7 +2,7 @@ import * as jwt from 'jsonwebtoken';
 import { Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { IUser, User } from '../schemas/user.schema';
-import { ConfigService } from 'src/config.service';
+import { ConfigService } from '../../config.service';
 
 @Injectable()
 export class AuthService {
