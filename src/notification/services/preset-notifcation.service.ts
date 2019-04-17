@@ -16,13 +16,7 @@ export class PresetNotificationsLogService {
     public constructor(
         @Inject('notificationLogModel') private readonly _notificationLogModel: mongoose.Model<INotificationLog>,
         private readonly _authService: AuthService
-    ) {
-        setInterval(() => {
-            this.notify({ payload: 'Hello World!', author: mongoose.Types.ObjectId('5cb71b108d3c7300193572d3') }, [
-                { _id: '5cb71b108d3c7300193572d3' },
-            ]);
-        }, 5000);
-    }
+    ) {}
 
     public async notify(
         data: NotifyData,
