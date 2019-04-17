@@ -24,6 +24,10 @@ export const userSchema: mongoose.Schema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    devices: {
+        type: String,
+        required: false
+    },
 }, { collection: 'users' });
 
 export type User = {
@@ -32,6 +36,7 @@ export type User = {
     readonly name: string;
     password: string;
     readonly createdAt: Date;
+    devices: string;
 };
 
 export interface IUser extends mongoose.Document, User { }
