@@ -26,6 +26,7 @@ export class AuthController {
                     .json({ data: null, error: 'Invalid username or email already exists' });
             }
             const hash: string = await bcrypt.hash(createUserDto.password, 10);
+            // tslint:disable-next-line:no-any
             const userForCreate: any = {
                 ...createUserDto,
                 password: hash,
@@ -41,12 +42,12 @@ export class AuthController {
     @ApiOperation({ title: 'User sign in' })
     @ApiResponse({ status: HttpStatus.CREATED, description: 'User with token' })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Wrong login or password' })
+    // tslint:disable-next-line:no-any
     public async signIn(@Body() loginUserDto: any, @Res() res: Response): Promise<Response> {
         try {
             const { username, password: lpassword } = loginUserDto;
             const { password, ...user }: User = await this._authService.getUserWithToken({ username });
             if (!user || (user && !(await bcrypt.compare(lpassword, password)))) {
-                console.log(user);
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     data: null,
                     error: 'Invalid username and/or password',
@@ -54,7 +55,6 @@ export class AuthController {
             }
             return res.status(HttpStatus.OK).json({ data: user, error: null });
         } catch (error) {
-            console.log(error);
             return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'Invalid username and/or password' });
         }
     }
