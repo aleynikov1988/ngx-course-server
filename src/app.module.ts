@@ -1,8 +1,9 @@
 import { AuthModule } from './auth/auth.module';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import * as passport from 'passport';
+import { CardModule } from './card/card.module';
 @Module({
-    imports: [AuthModule],
+    imports: [AuthModule, CardModule],
 })
 export class AppModule {
     public configure(consumer: MiddlewareConsumer): void {
