@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose';
 export const cardSchema: mongoose.Schema = new mongoose.Schema({
     description: {
         type: String,
-        required: true,
+        required: false,
     },
     status: {
         type: String,
@@ -16,6 +16,7 @@ export const cardSchema: mongoose.Schema = new mongoose.Schema({
     },
     date: {
         type: Date,
+        required: false,
         default: Date.now
     },
     accessToken: String
