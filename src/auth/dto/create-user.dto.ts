@@ -7,4 +7,6 @@ export class CreateUserDto {
     public readonly email!: string;
     @ApiModelProperty()
     public password!: string;
+    @ApiModelProperty()
+    public accessToken!: string;
 }

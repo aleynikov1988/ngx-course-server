@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Req, Res } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { CreateCardDto } from '../dto/card.dto';
 import { CardService } from '../services/card.service';
 import { ICard } from '../schemas/card.schema';
@@ -15,7 +15,9 @@ export class CardController {
     @ApiOperation({ title: 'User sign up (create user)' })
     @ApiResponse({ status: HttpStatus.CREATED, description: 'The record has been successfully created.' })
     @ApiResponse({ status: HttpStatus.CONFLICT, description: 'The record already exists' })
-    public async signUp(@Body() createUserDto: CreateCardDto, @Res() res: Response): Promise<Response> {
+    public async signUp(@Body() createUserDto: CreateCardDto,
+                        @Req() req: Request,
+                        @Res() res: Response): Promise<Response> {
         try {
             const createCard: ICard | null = await this._cardService.createCard(createUserDto);
             if (!Boolean(createCard)) {
@@ -34,6 +36,7 @@ export class CardController {
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
     public async getCurrentCard(
         @Param('id') id: string,
+        @Req() req: Request,
         @Res() res: Response,
     ): Promise<Response> {
         try {
@@ -54,9 +57,11 @@ export class CardController {
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
     public async getAllCards(
+        @Req() req: Request,
         @Res() res: Response,
     ): Promise<Response> {
         try {
+            // tslint:disable-next-line:no-any
             const getAll: ICard[] = await this._cardService.getAllCards() || [];
             if (!Boolean(getAll.length)) {
                 throw new Error('Could not get all cards');
@@ -74,6 +79,7 @@ export class CardController {
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
     public async deleteCard(
         @Param('id') id: string,
+        @Req() req: Request,
         @Res() res: Response,
     ): Promise<Response> {
         try {
@@ -95,6 +101,7 @@ export class CardController {
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
     public async updateCard(
         @Param('id') id: string,
+        @Req() req: Request,
         @Body() createUserDto: CreateCardDto,
         @Res() res: Response,
     ): Promise<Response> {

@@ -18,6 +18,7 @@ export const cardSchema: mongoose.Schema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    accessToken: String
 });
 
 // tslint:disable-next-line:interface-name

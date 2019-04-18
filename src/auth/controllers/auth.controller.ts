@@ -6,11 +6,16 @@ import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { IUser, User } from '../schemas/user.schema';
 import { AuthService } from '../services/auth.service';
+import * as jwt from 'jsonwebtoken';
+import { ConfigService } from '../../config.service';
 
 @ApiUseTags('auth')
 @Controller('auth')
 export class AuthController {
-    public constructor(private readonly _authService: AuthService) {}
+    public constructor(
+        private readonly _authService: AuthService,
+        private readonly _config: ConfigService,
+        ) {}
 
     @Post('signup')
     @ApiOperation({ title: 'User sign up (create user)' })
@@ -27,10 +32,11 @@ export class AuthController {
             }
             const hash: string = await bcrypt.hash(createUserDto.password, 10);
             // tslint:disable-next-line:no-any
-            const userForCreate: any = {
+            let userForCreate: any = {
                 ...createUserDto,
                 password: hash,
             };
+            userForCreate = await this._authService.createToken(userForCreate);
             const { password, ...newUser }: User = await this._authService.createUser(userForCreate);
             return res.status(HttpStatus.OK).json({ data: newUser, error: null });
         } catch (error) {

@@ -14,6 +14,7 @@ export const userSchema: mongoose.Schema = new mongoose.Schema({
     name: {
         type: String,
         unique: false,
+        required: false
     },
     email: {
         type: String,
@@ -28,15 +29,19 @@ export const userSchema: mongoose.Schema = new mongoose.Schema({
         type: String,
         required: false
     },
+    accessToken: {
+        type: String,
+        required: false
+    },
 }, { collection: 'users' });
 
 export type User = {
     readonly username: string;
     readonly email: string;
-    readonly name: string;
+    readonly name?: string;
     password: string;
-    readonly createdAt: Date;
-    devices: string;
+    readonly createdAt?: Date;
+    devices?: string;
 };
 
 export interface IUser extends mongoose.Document, User { }
