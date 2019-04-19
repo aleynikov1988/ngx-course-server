@@ -1,6 +1,6 @@
 import { CreateUserDto } from '../dto/create-user.dto';
 
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Res, Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';

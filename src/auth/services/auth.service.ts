@@ -44,6 +44,12 @@ export class AuthService {
         return await this._userModel.create(createUserDto);
     }
 
+    // tslint:disable-next-line: no-any
+    public async updateUser(createUserDto: any): Promise<IUser | null> {
+        return await this._userModel
+            .findOneAndUpdate({ username: createUserDto.username}, createUserDto, { new: true });
+    }
+
     // tslint:disable-next-line
     public async getUser(query: any, projection: {} = {}): Promise<IUser | null> {
         let user: IUser | null;
