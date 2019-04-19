@@ -19,6 +19,12 @@ export class PresetNotificationsLogService {
         private readonly _authService: AuthService
     ) {}
 
+    public async getAllNotification(query: {} = {}, projection: {} = {}): Promise<INotificationLog[] | null> {
+        return await this._notificationLogModel.find(query, projection)
+            .lean()
+            .exec();
+    }
+
     public async notify(data: NotifyData): Promise<void> {
         try {
             const users: IUser[] = await this._authService.getUsersByIds([], { devices: 1 });
