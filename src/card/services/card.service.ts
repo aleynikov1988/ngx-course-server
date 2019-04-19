@@ -35,7 +35,7 @@ export class CardService {
 
     public async updateCard(query: { _id: mongoose.Types.ObjectId }, body: CreateCardDto): Promise<ICard | null> {
         return await this._cardModel
-            .findOneAndUpdate(query, body, { upsert: true })
+            .findOneAndUpdate(query, body, { new: true })
             .lean()
             .exec();
     }
