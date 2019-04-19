@@ -45,11 +45,11 @@ export class AuthService {
     }
 
     // tslint:disable-next-line
-    public async getUser(query: any): Promise<IUser | null> {
+    public async getUser(query: any, projection: {} = {}): Promise<IUser | null> {
         let user: IUser | null;
         try {
             user = await this._userModel
-                .findOne(query)
+                .findOne(query, projection)
                 .lean()
                 .exec();
         } catch (err) {

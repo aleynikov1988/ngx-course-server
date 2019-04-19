@@ -9,5 +9,6 @@ import { NotificationModule } from '../notification/notification.module';
     imports: [DatabaseModule, NotificationModule],
     providers: [...services, ...cardProviders],
     controllers,
+    exports: [...services]
 })
 export class CardModule {}

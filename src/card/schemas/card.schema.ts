@@ -18,14 +18,14 @@ export const cardSchema: mongoose.Schema = new mongoose.Schema({
         default: CardStatus.BACKLOG,
     },
     owner: {
-        type: mongoose.Schema.Types.Mixed,
+        type: String,
         required: false,
     },
     date: {
         type: Date,
         required: false,
         default: Date.now,
-    },
+    }
 });
 
 // tslint:disable-next-line:interface-name
