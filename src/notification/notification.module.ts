@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { presetNotificationProviders } from './preset-notification.providers';
-import { DatabaseModule } from '../database/database.module';
 import { services } from './services';
+import { DatabaseModule } from '../database/database.module';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({

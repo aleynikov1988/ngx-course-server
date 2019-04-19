@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { IUser, User } from '../schemas/user.schema';
 import { ConfigService } from '../../config.service';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
