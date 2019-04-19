@@ -1,14 +1,21 @@
 import * as mongoose from 'mongoose';
 
+export enum CardStatus {
+    BACKLOG = 'backlog',
+    PROGRESS = 'progress',
+    QA = 'qa',
+    DONE = 'done',
+}
+
 export const cardSchema: mongoose.Schema = new mongoose.Schema({
     description: {
         type: String,
-        required: false,
+        required: true,
     },
     status: {
         type: String,
         required: false,
-        default: true,
+        default: CardStatus.BACKLOG,
     },
     owner: {
         type: mongoose.Schema.Types.Mixed,
@@ -17,9 +24,8 @@ export const cardSchema: mongoose.Schema = new mongoose.Schema({
     date: {
         type: Date,
         required: false,
-        default: Date.now
+        default: Date.now,
     },
-    accessToken: String
 });
 
 // tslint:disable-next-line:interface-name
@@ -34,5 +40,3 @@ export interface Card {
 }
 
 export interface ICard extends mongoose.Document, Card {}
-
-export type CardStatus = 'backlog' | 'progress' | 'qa' | 'done';

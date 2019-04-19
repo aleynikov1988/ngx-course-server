@@ -6,4 +6,4 @@ if [ ! -d /var/www/course-app-server/node_modules ]; then
   npm cache clean -f  &&  npm install
 fi;
 
-npm run start:dev
+npm start

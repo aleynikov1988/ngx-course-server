@@ -12,10 +12,7 @@ import { ConfigService } from '../../config.service';
 @ApiUseTags('auth')
 @Controller('auth')
 export class AuthController {
-    public constructor(
-        private readonly _authService: AuthService,
-        private readonly _config: ConfigService,
-        ) {}
+    public constructor(private readonly _authService: AuthService, private readonly _config: ConfigService) {}
 
     @Post('signup')
     @ApiOperation({ title: 'User sign up (create user)' })

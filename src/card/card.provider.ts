@@ -5,8 +5,7 @@ import { cardSchema } from './schemas/card.schema';
 export const cardProviders: any[] = [
     {
         provide: 'cardModel',
-        useFactory: (connection: Connection): Model<Document> =>
-            connection.model('CardModel', cardSchema),
+        useFactory: (connection: Connection): Model<Document> => connection.model('CardModel', cardSchema),
         inject: ['DbConnectionToken'],
     },
 ];

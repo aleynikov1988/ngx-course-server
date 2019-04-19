@@ -1,39 +1,42 @@
 import * as mongoose from 'mongoose';
 
-export const userSchema: mongoose.Schema = new mongoose.Schema({
-    createdAt: {
-        type: Date,
-        required: true,
-        default: new Date(),
+export const userSchema: mongoose.Schema = new mongoose.Schema(
+    {
+        createdAt: {
+            type: Date,
+            required: true,
+            default: new Date(),
+        },
+        username: {
+            type: String,
+            unique: true,
+            required: true,
+        },
+        name: {
+            type: String,
+            unique: false,
+            required: false,
+        },
+        email: {
+            type: String,
+            unique: false,
+            required: false,
+        },
+        password: {
+            type: String,
+            required: false,
+        },
+        devices: {
+            type: String,
+            required: false,
+        },
+        accessToken: {
+            type: String,
+            required: false,
+        },
     },
-    username: {
-        type: String,
-        unique: true,
-        required: true,
-    },
-    name: {
-        type: String,
-        unique: false,
-        required: false
-    },
-    email: {
-        type: String,
-        unique: false,
-        required: false,
-    },
-    password: {
-        type: String,
-        required: false,
-    },
-    devices: {
-        type: String,
-        required: false
-    },
-    accessToken: {
-        type: String,
-        required: false
-    },
-}, { collection: 'users' });
+    { collection: 'users' }
+);
 
 export type User = {
     readonly username: string;
@@ -44,4 +47,4 @@ export type User = {
     devices?: string;
 };
 
-export interface IUser extends mongoose.Document, User { }
+export interface IUser extends mongoose.Document, User {}

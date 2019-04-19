@@ -3,13 +3,11 @@ import { Module } from '@nestjs/common';
 import { cardProviders } from './card.provider';
 import { controllers } from './controller';
 import { services } from './services';
-// import { NotificationModule } from '../notification/notification.module';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-    imports: [DatabaseModule],
+    imports: [DatabaseModule, NotificationModule],
     providers: [...services, ...cardProviders],
     controllers,
 })
-export class CardModule {
-
-}
+export class CardModule {}

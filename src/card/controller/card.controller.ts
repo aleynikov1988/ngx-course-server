@@ -5,24 +5,36 @@ import { Request, Response } from 'express';
 import { CreateCardDto } from '../dto/card.dto';
 import { CardService } from '../services/card.service';
 import { ICard } from '../schemas/card.schema';
+import { PresetNotificationsLogService } from '../../notification/services/preset-notifcation.service';
 
 @ApiUseTags('cards')
 @Controller('cards')
 export class CardController {
-    public constructor(private _cardService: CardService) { }
+    public constructor(
+        private _cardService: CardService,
+        private readonly _notifyService: PresetNotificationsLogService
+    ) {}
 
     @Post('create')
     @ApiOperation({ title: 'User sign up (create user)' })
     @ApiResponse({ status: HttpStatus.CREATED, description: 'The record has been successfully created.' })
     @ApiResponse({ status: HttpStatus.CONFLICT, description: 'The record already exists' })
-    public async signUp(@Body() createUserDto: CreateCardDto,
-                        @Req() req: Request,
-                        @Res() res: Response): Promise<Response> {
+    public async signUp(
+        @Body() createUserDto: CreateCardDto,
+        @Req() req: Request,
+        @Res() res: Response
+    ): Promise<Response> {
         try {
+            const username: string = req.user.username;
             const createCard: ICard | null = await this._cardService.createCard(createUserDto);
             if (!Boolean(createCard)) {
                 throw new Error('Could not create card');
             }
+            await this._notifyService.notify({
+                title: 'Card has just been created!',
+                text: createCard.description,
+                author: username,
+            });
             return res.status(HttpStatus.OK).json({ data: createCard, error: null });
         } catch (error) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error });
@@ -34,11 +46,7 @@ export class CardController {
     @ApiResponse({ status: HttpStatus.OK })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
-    public async getCurrentCard(
-        @Param('id') id: string,
-        @Req() req: Request,
-        @Res() res: Response,
-    ): Promise<Response> {
+    public async getCurrentCard(@Param('id') id: string, @Req() req: Request, @Res() res: Response): Promise<Response> {
         try {
             const query: { _id: Types.ObjectId } = { _id: Types.ObjectId(id) };
             const createCardById: ICard | null = await this._cardService.getCardById(query);
@@ -56,13 +64,10 @@ export class CardController {
     @ApiResponse({ status: HttpStatus.OK })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
-    public async getAllCards(
-        @Req() req: Request,
-        @Res() res: Response,
-    ): Promise<Response> {
+    public async getAllCards(@Req() req: Request, @Res() res: Response): Promise<Response> {
         try {
             // tslint:disable-next-line:no-any
-            const getAll: ICard[] = await this._cardService.getAllCards() || [];
+            const getAll: ICard[] = (await this._cardService.getAllCards()) || [];
             if (!Boolean(getAll.length)) {
                 throw new Error('Could not get all cards');
             }
@@ -77,11 +82,7 @@ export class CardController {
     @ApiResponse({ status: HttpStatus.OK })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
-    public async deleteCard(
-        @Param('id') id: string,
-        @Req() req: Request,
-        @Res() res: Response,
-    ): Promise<Response> {
+    public async deleteCard(@Param('id') id: string, @Req() req: Request, @Res() res: Response): Promise<Response> {
         try {
             const query: { _id: Types.ObjectId } = { _id: Types.ObjectId(id) };
             const deleteCardById: ICard | null = await this._cardService.deleteCard(query);
@@ -103,12 +104,11 @@ export class CardController {
         @Param('id') id: string,
         @Req() req: Request,
         @Body() createUserDto: CreateCardDto,
-        @Res() res: Response,
+        @Res() res: Response
     ): Promise<Response> {
         try {
             const query: { _id: Types.ObjectId } = { _id: Types.ObjectId(id) };
-            const updateCardById: ICard | null =
-                await this._cardService.updateCard(query, createUserDto);
+            const updateCardById: ICard | null = await this._cardService.updateCard(query, createUserDto);
             if (!updateCardById) {
                 throw new Error('Could not delete card by id');
             }
@@ -117,5 +117,4 @@ export class CardController {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: error.message });
         }
     }
-
 }
