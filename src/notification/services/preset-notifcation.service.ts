@@ -19,16 +19,17 @@ export class PresetNotificationsLogService {
         private readonly _authService: AuthService
     ) {}
 
+    // tslint:disable-next-line:no-any
     public async getAllNotification(query: {} = {}, projection: {} = {}): Promise<INotificationLog[] | null> {
-        return await this._notificationLogModel.find(query, projection)
+        return await this._notificationLogModel
+            .find(query, projection)
             .lean()
             .exec();
     }
 
     public async notify(data: NotifyData): Promise<void> {
         try {
-            const users: IUser[] = await this._authService.getUsersByIds([], { devices: 1 });
-            // tslint:disable-next-line
+            const users: IUser[] = await this._authService.getUsersByIds([], { devices: 1, username: 1 });
             const notificationObj: any = {
                 ...data,
                 users,
