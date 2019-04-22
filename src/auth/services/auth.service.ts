@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { IUser, User } from '../schemas/user.schema';
 import { ConfigService } from '../../config.service';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -43,12 +44,18 @@ export class AuthService {
         return await this._userModel.create(createUserDto);
     }
 
+    // tslint:disable-next-line: no-any
+    public async updateUser(createUserDto: any): Promise<IUser | null> {
+        return await this._userModel
+            .findOneAndUpdate({ username: createUserDto.username}, createUserDto, { new: true });
+    }
+
     // tslint:disable-next-line
-    public async getUser(query: any): Promise<IUser | null> {
+    public async getUser(query: any, projection: {} = {}): Promise<IUser | null> {
         let user: IUser | null;
         try {
             user = await this._userModel
-                .findOne(query)
+                .findOne(query, projection)
                 .lean()
                 .exec();
         } catch (err) {
@@ -84,7 +91,7 @@ export class AuthService {
     }
 
     // tslint:disable-next-line: no-any
-    public async devicesUser(email: string, userForUpdate: any): Promise<IUser | null> {
-        return await this._userModel.findOneAndUpdate({ email }, { $set: userForUpdate });
+    public async devicesUser(id: string, userForUpdate: any): Promise<IUser | null> {
+        return await this._userModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) }, { $set: userForUpdate });
     }
 }

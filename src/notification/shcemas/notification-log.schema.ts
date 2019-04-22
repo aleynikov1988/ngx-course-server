@@ -1,23 +1,21 @@
 import * as mongoose from 'mongoose';
-import { IUser } from '../../auth/schemas/user.schema';
 
 export const notificationLogSchema: mongoose.Schema = new mongoose.Schema({
-    notification: {
-        type: Object,
-        required: false,
-    },
-    users: {
-        type: [{ _id: String, status: Boolean }],
-        required: false,
-    },
-    dateSend: {
-        type: Date,
+    title: {
+        type: String,
         required: true,
     },
-    notRead: {
-        type: Boolean,
+    text: {
+        type: String,
+        required: true,
+    },
+    users: {
+        type: [{ _id: String, status: { type: Boolean, default: true }, username: String }],
         required: false,
-        default: true,
+    },
+    date: {
+        type: Date,
+        required: true,
     },
     author: {
         type: String,
@@ -27,13 +25,13 @@ export const notificationLogSchema: mongoose.Schema = new mongoose.Schema({
 
 // tslint:disable-next-line:interface-name
 export interface NotificationLog {
+    title: string;
+    text: string;
     // tslint:disable-next-line:no-any
-    notification?: any;
-    // tslint:disable-next-line:no-any
-    users: [{ _id: string; status: boolean }];
+    users: any;
     dateSend: Date;
-    author?: IUser;
-    notRead?: boolean;
+    author?: string;
+    status?: boolean;
 }
 
 export interface INotificationLog extends mongoose.Document, NotificationLog {}

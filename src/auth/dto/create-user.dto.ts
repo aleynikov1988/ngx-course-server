@@ -1,4 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger';
+import { User } from '../schemas/user.schema';
 
 export class CreateUserDto {
     @ApiModelProperty()
@@ -7,4 +8,8 @@ export class CreateUserDto {
     public readonly email!: string;
     @ApiModelProperty()
     public password!: string;
+    @ApiModelProperty()
+    public accessToken!: string;
+    @ApiModelProperty({required: false})
+    public adress?: User[];
 }
