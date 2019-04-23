@@ -19,6 +19,24 @@ export class PresetNotificationsLogService {
         private readonly _authService: AuthService
     ) {}
 
+    public async updateStatus(_id: string, username: string): Promise<INotificationLog | null> {
+        const notify: INotificationLog = await this._notificationLogModel
+            .findOne({ _id: mongoose.Types.ObjectId(_id) })
+            .lean()
+            .exec();
+        // tslint:disable-next-line:no-any
+        notify.users = notify.users.map((i: any) => {
+            if (i.username === username) {
+                i.status = false;
+            }
+            return i;
+        });
+        return await this._notificationLogModel
+            .findByIdAndUpdate({ _id: mongoose.Types.ObjectId(_id) }, notify, { new: true })
+            .lean()
+            .exec();
+    }
+
     // tslint:disable-next-line:no-any
     public async getAllNotification(query: {} = {}, projection: {} = {}): Promise<INotificationLog[] | null> {
         return await this._notificationLogModel
