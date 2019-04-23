@@ -41,6 +41,7 @@ export class PresetNotificationsLogService {
     public async getAllNotification(query: {} = {}, projection: {} = {}): Promise<INotificationLog[] | null> {
         return await this._notificationLogModel
             .find(query, projection)
+            .sort({ date: -1 })
             .lean()
             .exec();
     }
