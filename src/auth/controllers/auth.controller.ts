@@ -61,4 +61,19 @@ export class AuthController {
             return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'Invalid username and/or password' });
         }
     }
+
+    @Post('checkuser')
+    @ApiOperation({ title: 'User sign in' })
+    @ApiResponse({ status: HttpStatus.CREATED, description: 'User with token' })
+    @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Wrong login or password' })
+    // tslint:disable-next-line:no-any
+    public async checkUser(@Body() loginUserDto: any, @Res() res: Response): Promise<Response> {
+        try {
+            const { token } = loginUserDto;
+            const user: User = await this._authService.getUserWithToken({ accessToken: token });
+            return res.status(HttpStatus.OK).json({ data: user, error: null });
+        } catch (error) {
+            return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'Invalid username and/or password' });
+        }
+    }
 }
