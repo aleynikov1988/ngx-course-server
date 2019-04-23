@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import { IUser } from '../../auth/schemas/user.schema';
 
 export const notificationLogSchema: mongoose.Schema = new mongoose.Schema({
     title: {
@@ -11,7 +10,7 @@ export const notificationLogSchema: mongoose.Schema = new mongoose.Schema({
         required: true,
     },
     users: {
-        type: [{ _id: String, status: Boolean }],
+        type: [{ _id: String, status: { type: Boolean, default: true }, username: String }],
         required: false,
     },
     date: {
@@ -28,9 +27,11 @@ export const notificationLogSchema: mongoose.Schema = new mongoose.Schema({
 export interface NotificationLog {
     title: string;
     text: string;
-    users: [{ _id: string; status: boolean }];
+    // tslint:disable-next-line:no-any
+    users: any;
     dateSend: Date;
     author?: string;
+    status?: boolean;
 }
 
 export interface INotificationLog extends mongoose.Document, NotificationLog {}
