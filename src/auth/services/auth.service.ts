@@ -3,7 +3,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { IUser, User } from '../schemas/user.schema';
 import { ConfigService } from '../../config.service';
-import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -69,11 +68,10 @@ export class AuthService {
 
     // tslint:disable-next-line: no-any
     public async getUserWithToken(query: any): Promise<User> {
-        const user: IUser = await this._userModel
+        return await this._userModel
             .findOne(query)
             .lean()
             .exec();
-        return await this.createToken(user);
     }
 
     public async getUsersByIds(
