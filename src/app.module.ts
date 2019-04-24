@@ -10,6 +10,6 @@ export class AppModule {
     public configure(consumer: MiddlewareConsumer): void {
         consumer
             .apply(passport.authenticate('jwt', { session: false }))
-            .forRoutes('cards', 'notification');
+            .forRoutes('cards', 'notification', 'user/updateuser');
     }
 }

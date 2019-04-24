@@ -6,7 +6,6 @@ import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { IUser, User } from '../schemas/user.schema';
 import { AuthService } from '../services/auth.service';
-import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '../../config.service';
 
 @ApiUseTags('auth')

@@ -21,12 +21,17 @@ export class NotificationController {
             if (notifications.length !== 0) {
                 notifications = notifications.map((i: INotificationLog) => {
                     // tslint:disable-next-line:no-any
-                    i.status = i.users.filter((j: any) => j.username === username)[0].status;
-                    delete i.users;
-                    return i;
+                    const status: any = i.users.filter((j: any) => j.username === username);
+                    if (status.length > 0) {
+                        i.status = status[0].status;
+                        delete i.users;
+                        return i;
+                    }
                 });
             }
-            return res.status(HttpStatus.OK).json({ data: notifications, error: null });
+            // tslint:disable-next-line:no-any
+            notifications = notifications.filter((i: any) => i);
+            return res.status(HttpStatus.OK).json({ data: !notifications ? [] : notifications, error: null });
         } catch (e) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, Error: e });
         }
