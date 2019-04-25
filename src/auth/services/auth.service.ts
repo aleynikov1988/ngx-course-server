@@ -74,6 +74,14 @@ export class AuthService {
             .exec();
     }
 
+    // tslint:disable-next-line: no-any
+    public async getUsers(query: any): Promise<User[] | null> {
+        return await this._userModel
+            .find(query, { _id: 1 })
+            .lean()
+            .exec();
+    }
+
     public async getUsersByIds(
         idList: mongoose.Types.ObjectId[],
         // tslint:disable-next-line:no-any

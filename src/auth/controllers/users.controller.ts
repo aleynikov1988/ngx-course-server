@@ -1,4 +1,4 @@
-import { Controller, HttpStatus, Put, Req, Res } from '@nestjs/common';
+import { Controller, HttpStatus, Post, Put, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Body } from '@nestjs/common/decorators/http/route-params.decorator';
 import { AuthService } from '../services/auth.service';
@@ -51,6 +51,7 @@ export class UserController {
                 name: updateUserDto.name,
                 adress: updateUserDto.adress,
                 password: hash ? hash : user.password,
+                gender: updateUserDto.gender,
             };
             const updateUser: User = await this._authService.updateUser(newUser);
             if (!updateUser) {
@@ -59,6 +60,25 @@ export class UserController {
             return res.status(HttpStatus.OK).json({ data: updateUser, error: null });
         } catch (error) {
             return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: error.message });
+        }
+    }
+
+    @Post('checkPassword')
+    // tslint:disable-next-line:no-any
+    public async checkPass(@Body() updateUserDto: any, @Res() res: Response, @Req() req: Request): Promise<Response> {
+        try {
+            const username: string = req.user.username;
+            const user: User = await this._authService.getUserWithToken({ username });
+            let isCurrentPasswordValid: boolean;
+            if (updateUserDto.data) {
+                isCurrentPasswordValid = await bcrypt.compare(updateUserDto.data, user.password as string);
+                if (!isCurrentPasswordValid) {
+                    return res.status(HttpStatus.OK).json({ 'Вы ввели не верный пароль': true });
+                }
+            }
+            return res.status(HttpStatus.OK).json({ data: null });
+        } catch (e) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: 'No user' });
         }
     }
 }

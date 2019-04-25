@@ -58,6 +58,9 @@ export const userSchema: mongoose.Schema = new mongoose.Schema(
             type: String,
             required: false,
         },
+        gender: {
+            type: Boolean,
+        }
     },
     { collection: 'users' }
 );
@@ -71,6 +74,7 @@ export type User = {
     readonly createdAt?: Date;
     devices?: string;
     accessToken?: string;
+    gender: boolean;
     adress: IAdress[];
 };
 

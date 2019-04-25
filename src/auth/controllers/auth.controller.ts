@@ -75,4 +75,18 @@ export class AuthController {
             return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'Invalid username and/or password' });
         }
     }
+
+    @Post('checkUsername')
+    // tslint:disable-next-line:no-any
+    public async checkUsername(@Body() updateUserDto: any, @Res() res: Response): Promise<Response> {
+        try {
+            const users: User[] = await this._authService.getUsers({ username: updateUserDto.username });
+            if (users && users.length > 0) {
+                return res.status(HttpStatus.OK).json({ 'Имя пользователя занято': true });
+            }
+            return res.status(HttpStatus.OK).json({ data: null });
+        } catch (e) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: 'No user' });
+        }
+    }
 }
