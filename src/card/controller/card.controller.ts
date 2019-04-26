@@ -12,7 +12,7 @@ import { PresetNotificationsLogService } from '../../notification/services/prese
 export class CardController {
     public constructor(
         private _cardService: CardService,
-        private readonly _notifyService: PresetNotificationsLogService,
+        private readonly _notifyService: PresetNotificationsLogService
     ) {}
 
     @Post('create')
@@ -28,13 +28,13 @@ export class CardController {
             const username: string = req.user.username;
             const createCard: ICard | null = await this._cardService.createCard({
                 ...createUserDto,
-                owner: username
+                owner: username,
             });
             if (!Boolean(createCard)) {
                 throw new Error('Could not create card');
             }
             await this._notifyService.notify({
-                title: 'Card has just been created!',
+                title: `Карточка под номером ${createCard._id.toString().substr(0, 4)} была создана`,
                 text: createCard.description,
                 author: username,
             });
@@ -93,7 +93,7 @@ export class CardController {
                 throw new Error('Could not delete card by id');
             }
             await this._notifyService.notify({
-                title: 'Card has been successfully deleted!',
+                title: `Карточка под номером ${id.substr(0, 4)} была удалена`,
                 text: deleteCardById.description,
                 author: username,
             });
@@ -122,7 +122,7 @@ export class CardController {
                 throw new Error('Could not update card by id');
             }
             await this._notifyService.notify({
-                title: 'Card has been successfully updated!',
+                title: `Статус карточки под номером ${id.substr(0, 4)} был изменен на ${updateCardById.status}`,
                 text: updateCardById.description,
                 author: username,
             });
