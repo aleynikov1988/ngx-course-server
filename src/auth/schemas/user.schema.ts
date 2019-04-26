@@ -13,11 +13,11 @@ export const adressSchema: mongoose.Schema = new mongoose.Schema({
         type: String,
         required: false,
     },
-    zipCode: {
+    zip: {
         type: String,
         required: false,
     },
-})
+});
 
 export const userSchema: mongoose.Schema = new mongoose.Schema(
     {
@@ -56,7 +56,10 @@ export const userSchema: mongoose.Schema = new mongoose.Schema(
         adress: [adressSchema],
         surname: {
             type: String,
-            required: false
+            required: false,
+        },
+        gender: {
+            type: Boolean,
         }
     },
     { collection: 'users' }
@@ -71,7 +74,8 @@ export type User = {
     readonly createdAt?: Date;
     devices?: string;
     accessToken?: string;
-    adress: IAdress[]
+    gender: boolean;
+    adress: IAdress[];
 };
 
 export type IAdress = {

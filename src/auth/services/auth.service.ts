@@ -3,7 +3,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { IUser, User } from '../schemas/user.schema';
 import { ConfigService } from '../../config.service';
-import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -46,8 +45,9 @@ export class AuthService {
 
     // tslint:disable-next-line: no-any
     public async updateUser(createUserDto: any): Promise<IUser | null> {
-        return await this._userModel
-            .findOneAndUpdate({ username: createUserDto.username}, createUserDto, { new: true });
+        return await this._userModel.findOneAndUpdate({ username: createUserDto.username }, createUserDto, {
+            new: true,
+        });
     }
 
     // tslint:disable-next-line
@@ -68,11 +68,18 @@ export class AuthService {
 
     // tslint:disable-next-line: no-any
     public async getUserWithToken(query: any): Promise<User> {
-        const user: IUser = await this._userModel
+        return await this._userModel
             .findOne(query)
             .lean()
             .exec();
-        return await this.createToken(user);
+    }
+
+    // tslint:disable-next-line: no-any
+    public async getUsers(query: any): Promise<User[] | null> {
+        return await this._userModel
+            .find(query, { _id: 1 })
+            .lean()
+            .exec();
     }
 
     public async getUsersByIds(

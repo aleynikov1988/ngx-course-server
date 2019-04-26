@@ -1,12 +1,11 @@
 import { CreateUserDto } from '../dto/create-user.dto';
 
-import { Body, Controller, HttpStatus, Post, Res, Put } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Put, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { IUser, User } from '../schemas/user.schema';
 import { AuthService } from '../services/auth.service';
-import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '../../config.service';
 
 @ApiUseTags('auth')
@@ -59,6 +58,46 @@ export class AuthController {
             return res.status(HttpStatus.OK).json({ data: user, error: null });
         } catch (error) {
             return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'Invalid username and/or password' });
+        }
+    }
+
+    @Post('checkuser')
+    @ApiOperation({ title: 'User sign in' })
+    @ApiResponse({ status: HttpStatus.CREATED, description: 'User with token' })
+    @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Wrong login or password' })
+    // tslint:disable-next-line:no-any
+    public async checkUser(@Body() loginUserDto: any, @Res() res: Response): Promise<Response> {
+        try {
+            const { token } = loginUserDto;
+            const user: User = await this._authService.getUserWithToken({ accessToken: token });
+            return res.status(HttpStatus.OK).json({ data: user, error: null });
+        } catch (error) {
+            return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'Invalid username and/or password' });
+        }
+    }
+
+    @Post('checkUsername')
+    // tslint:disable-next-line:no-any
+    public async checkUsername(@Body() updateUserDto: any, @Res() res: Response): Promise<Response> {
+        try {
+            const users: User[] = await this._authService.getUsers({ username: updateUserDto.username });
+            if (users && users.length > 0) {
+                return res.status(HttpStatus.OK).json({ 'Имя пользователя занято': true });
+            }
+            return res.status(HttpStatus.OK).json({ data: null });
+        } catch (e) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: 'No user' });
+        }
+    }
+
+    @Put('devices')
+    public async updateDevice(@Body() data: { id: string; devices: string }, @Res() res: Response): Promise<Response> {
+        try {
+            const { id, devices } = data;
+            const user: IUser | null = await this._authService.devicesUser(id, { devices });
+            return res.status(HttpStatus.OK).json({ data: user, error: null });
+        } catch (e) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ data: null, Error: e });
         }
     }
 }
