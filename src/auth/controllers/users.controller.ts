@@ -11,16 +11,6 @@ import * as bcrypt from 'bcrypt';
 export class UserController {
     public constructor(private readonly _authService: AuthService) {}
 
-    @Put('devices')
-    public async updateDevice(@Body() data: { id: string; devices: string }, @Res() res: Response): Promise<Response> {
-        try {
-            const { id, devices } = data;
-            const user: IUser | null = await this._authService.devicesUser(id, { devices });
-            return res.status(HttpStatus.OK).json({ data: user, error: null });
-        } catch (e) {
-            return res.status(HttpStatus.BAD_REQUEST).json({ data: null, Error: e });
-        }
-    }
 
     @Put('updateuser')
     @ApiOperation({ title: 'Update user' })

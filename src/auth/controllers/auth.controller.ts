@@ -1,6 +1,6 @@
 import { CreateUserDto } from '../dto/create-user.dto';
 
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Put, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
@@ -87,6 +87,17 @@ export class AuthController {
             return res.status(HttpStatus.OK).json({ data: null });
         } catch (e) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: 'No user' });
+        }
+    }
+
+    @Put('devices')
+    public async updateDevice(@Body() data: { id: string; devices: string }, @Res() res: Response): Promise<Response> {
+        try {
+            const { id, devices } = data;
+            const user: IUser | null = await this._authService.devicesUser(id, { devices });
+            return res.status(HttpStatus.OK).json({ data: user, error: null });
+        } catch (e) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ data: null, Error: e });
         }
     }
 }
