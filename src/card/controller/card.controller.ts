@@ -12,8 +12,9 @@ import { PresetNotificationsLogService } from '../../notification/services/prese
 export class CardController {
     public constructor(
         private _cardService: CardService,
-        private readonly _notifyService: PresetNotificationsLogService
-    ) {}
+        private readonly _notifyService: PresetNotificationsLogService,
+    ) {
+    }
 
     @Post('create')
     @ApiOperation({ title: 'Create card)' })
@@ -22,7 +23,7 @@ export class CardController {
     public async signUp(
         @Body() createUserDto: CreateCardDto,
         @Req() req: Request,
-        @Res() res: Response
+        @Res() res: Response,
     ): Promise<Response> {
         try {
             const username: string = req.user.username;
@@ -34,7 +35,7 @@ export class CardController {
                 throw new Error('Could not create card');
             }
             await this._notifyService.notify({
-                title: `Карточка под номером ${createCard._id.toString().substr(0, 4)} была создана`,
+                title: `Карточка под номером ${ createCard._id.toString().slice(-4)} была создана`,
                 text: createCard.description,
                 author: username,
             });
@@ -93,7 +94,7 @@ export class CardController {
                 throw new Error('Could not delete card by id');
             }
             await this._notifyService.notify({
-                title: `Карточка под номером ${id.substr(0, 4)} была удалена`,
+                title: `Карточка под номером ${id.toString().slice(-4)} была удалена`,
                 text: deleteCardById.description,
                 author: username,
             });
@@ -112,7 +113,7 @@ export class CardController {
         @Param('id') id: string,
         @Req() req: Request,
         @Body() createUserDto: CreateCardDto,
-        @Res() res: Response
+        @Res() res: Response,
     ): Promise<Response> {
         try {
             const username: string = req.user.username;
@@ -122,7 +123,7 @@ export class CardController {
                 throw new Error('Could not update card by id');
             }
             await this._notifyService.notify({
-                title: `Статус карточки под номером ${id.substr(0, 4)} был изменен на ${updateCardById.status}`,
+                title: `Статус карточки под номером ${id.toString().slice(-4)} был изменен на ${updateCardById.status}`,
                 text: updateCardById.description,
                 author: username,
             });
