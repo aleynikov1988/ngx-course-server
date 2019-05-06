@@ -69,6 +69,9 @@ export class AuthController {
     public async checkUser(@Body() loginUserDto: any, @Res() res: Response): Promise<Response> {
         try {
             const { token } = loginUserDto;
+            if (!token) {
+                throw Error('no token');
+            }
             const user: User = await this._authService.getUserWithToken({ accessToken: token });
             return res.status(HttpStatus.OK).json({ data: user, error: null });
         } catch (error) {
