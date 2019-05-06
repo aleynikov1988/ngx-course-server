@@ -35,8 +35,8 @@ export class CardController {
                 throw new Error('Could not create card');
             }
             await this._notifyService.notify({
-                title: `Карточка под номером ${ createCard._id.toString().slice(-4)} была создана`,
-                text: createCard.description,
+                text: `Карточка под номером ${ createCard._id.toString().slice(-4)} была создана`,
+                title: createCard.description,
                 author: username,
             });
             return res.status(HttpStatus.OK).json({ data: createCard, error: null });
@@ -70,11 +70,8 @@ export class CardController {
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
     public async getAllCards(@Req() req: Request, @Res() res: Response): Promise<Response> {
         try {
-            const getAll: ICard[] = (await this._cardService.getAllCards()) || [];
-            if (!Boolean(getAll.length)) {
-                throw new Error('Could not get all cards');
-            }
-            return res.status(HttpStatus.OK).json({ data: getAll, error: null });
+            const getAll: ICard[] | null = await this._cardService.getAllCards();
+            return res.status(HttpStatus.OK).json({ data: !getAll ? [] : getAll, error: null });
         } catch (error) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: error.message });
         }
@@ -94,8 +91,8 @@ export class CardController {
                 throw new Error('Could not delete card by id');
             }
             await this._notifyService.notify({
-                title: `Карточка под номером ${id.toString().slice(-4)} была удалена`,
-                text: deleteCardById.description,
+                text: `Карточка под номером ${id.toString().slice(-4)} была удалена`,
+                title: deleteCardById.description,
                 author: username,
             });
             return res.status(HttpStatus.OK).json({ data: deleteCardById, error: null });
@@ -123,8 +120,8 @@ export class CardController {
                 throw new Error('Could not update card by id');
             }
             await this._notifyService.notify({
-                title: `Статус карточки под номером ${id.toString().slice(-4)} был изменен на ${updateCardById.status}`,
-                text: updateCardById.description,
+                text: `Статус карточки под номером ${id.toString().slice(-4)} был изменен на ${updateCardById.status}`,
+                title: updateCardById.description,
                 author: username,
             });
             return res.status(HttpStatus.OK).json({ data: updateCardById, error: null });
