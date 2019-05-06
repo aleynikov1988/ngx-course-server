@@ -70,11 +70,8 @@ export class CardController {
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
     public async getAllCards(@Req() req: Request, @Res() res: Response): Promise<Response> {
         try {
-            const getAll: ICard[] = (await this._cardService.getAllCards()) || [];
-            if (!Boolean(getAll.length)) {
-                throw new Error('Could not get all cards');
-            }
-            return res.status(HttpStatus.OK).json({ data: getAll, error: null });
+            const getAll: ICard[] | null = await this._cardService.getAllCards();
+            return res.status(HttpStatus.OK).json({ data: !getAll ? [] : getAll, error: null });
         } catch (error) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: error.message });
         }
