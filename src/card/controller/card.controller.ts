@@ -35,8 +35,8 @@ export class CardController {
                 throw new Error('Could not create card');
             }
             await this._notifyService.notify({
-                title: `Карточка под номером ${ createCard._id.toString().slice(-4)} была создана`,
-                text: createCard.description,
+                text: `Карточка под номером ${ createCard._id.toString().slice(-4)} была создана`,
+                title: createCard.description,
                 author: username,
             });
             return res.status(HttpStatus.OK).json({ data: createCard, error: null });
@@ -91,8 +91,8 @@ export class CardController {
                 throw new Error('Could not delete card by id');
             }
             await this._notifyService.notify({
-                title: `Карточка под номером ${id.toString().slice(-4)} была удалена`,
-                text: deleteCardById.description,
+                text: `Карточка под номером ${id.toString().slice(-4)} была удалена`,
+                title: deleteCardById.description,
                 author: username,
             });
             return res.status(HttpStatus.OK).json({ data: deleteCardById, error: null });
@@ -120,8 +120,8 @@ export class CardController {
                 throw new Error('Could not update card by id');
             }
             await this._notifyService.notify({
-                title: `Статус карточки под номером ${id.toString().slice(-4)} был изменен на ${updateCardById.status}`,
-                text: updateCardById.description,
+                text: `Статус карточки под номером ${id.toString().slice(-4)} был изменен на ${updateCardById.status}`,
+                title: updateCardById.description,
                 author: username,
             });
             return res.status(HttpStatus.OK).json({ data: updateCardById, error: null });
