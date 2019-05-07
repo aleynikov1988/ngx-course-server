@@ -6,10 +6,11 @@ import { IUser } from '../../auth/schemas/user.schema';
 import { INotificationLog } from '../shcemas/notification-log.schema';
 
 type NotifyData = {
-    title: string;
     text: string;
     author?: string;
     dateSend?: Date;
+    cardId: string;
+    title: string;
 };
 
 @Injectable()
@@ -79,5 +80,15 @@ export class PresetNotificationsLogService {
             // tslint:disable-next-line
             console.log(`Error when send notify ===> ${err}`);
         }
+    }
+
+    public async getNotifyForTable(page: number, perPage: number): Promise<INotificationLog[] | null> {
+        return await this._notificationLogModel
+            .find()
+            .skip(page * perPage)
+            .limit(perPage)
+            .sort({ date: -1 })
+            .lean()
+            .exec();
     }
 }
