@@ -9,6 +9,22 @@ import { INotificationLog } from '../shcemas/notification-log.schema';
 export class NotificationController {
     public constructor(private _presetNotif: PresetNotificationsLogService) {}
 
+    @Get('checkPage')
+    public async checkPage(
+        @Req() req: Request,
+        @Query() param: { page: number },
+        @Res() res: Response
+    ): Promise<Response> {
+        try {
+            const { page } = param;
+            const perPage: number = 10;
+            const tableData: INotificationLog[] | null = await this._presetNotif.getNotifyForTable(page, perPage);
+            return res.status(HttpStatus.OK).json({ data: { flag: !!tableData.length }, error: null });
+        } catch (error) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: error.message });
+        }
+    }
+
     @Get('getAll')
     @ApiOperation({ title: 'Update card' })
     @ApiResponse({ status: HttpStatus.OK })
@@ -31,12 +47,10 @@ export class NotificationController {
             }
             // tslint:disable-next-line:no-any
             notifications = notifications.filter((i: any) => i);
-            return res
-                .status(HttpStatus.OK)
-                .json({
-                    data: !notifications ? 0 : notifications.filter((notify: INotificationLog) => notify.status).length,
-                    error: null,
-                });
+            return res.status(HttpStatus.OK).json({
+                data: !notifications ? 0 : notifications.filter((notify: INotificationLog) => notify.status).length,
+                error: null,
+            });
         } catch (e) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, Error: e });
         }
@@ -80,7 +94,6 @@ export class NotificationController {
             const perPage: number = 10;
             const allData: INotificationLog[] = await this._presetNotif.getAllNotification();
             let tableData: INotificationLog[] | null = await this._presetNotif.getNotifyForTable(page, perPage);
-            console.log(tableData);
             if (tableData.length !== 0) {
                 tableData = tableData.map((i: INotificationLog) => {
                     // tslint:disable-next-line:no-any
