@@ -19,7 +19,7 @@ export class NotificationController {
             const { page } = param;
             const perPage: number = 10;
             const tableData: INotificationLog[] | null = await this._presetNotif.getNotifyForTable(page, perPage);
-            return res.status(HttpStatus.OK).json({ data: { flag: !!tableData.length }, error: null });
+            return res.status(HttpStatus.OK).json({ data: { pageExists: !!tableData.length }, error: null });
         } catch (error) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: error.message });
         }
