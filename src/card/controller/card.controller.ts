@@ -12,9 +12,8 @@ import { PresetNotificationsLogService } from '../../notification/services/prese
 export class CardController {
     public constructor(
         private _cardService: CardService,
-        private readonly _notifyService: PresetNotificationsLogService,
-    ) {
-    }
+        private readonly _notifyService: PresetNotificationsLogService
+    ) {}
 
     @Post('create')
     @ApiOperation({ title: 'Create card)' })
@@ -23,7 +22,7 @@ export class CardController {
     public async signUp(
         @Body() createUserDto: CreateCardDto,
         @Req() req: Request,
-        @Res() res: Response,
+        @Res() res: Response
     ): Promise<Response> {
         try {
             const username: string = req.user.username;
@@ -35,9 +34,10 @@ export class CardController {
                 throw new Error('Could not create card');
             }
             await this._notifyService.notify({
-                text: `Карточка под номером ${ createCard._id.toString().slice(-4)} была создана`,
-                title: createCard.description,
+                text: `Карточка под номером ${createCard._id.toString().slice(-4)} была создана`,
                 author: username,
+                cardId: `${createCard._id.toString().slice(-4)}`,
+                title: createCard.description
             });
             return res.status(HttpStatus.OK).json({ data: createCard, error: null });
         } catch (error) {
@@ -92,8 +92,9 @@ export class CardController {
             }
             await this._notifyService.notify({
                 text: `Карточка под номером ${id.toString().slice(-4)} была удалена`,
-                title: deleteCardById.description,
                 author: username,
+                cardId: `${id.toString().slice(-4)}`,
+                title: deleteCardById.description
             });
             return res.status(HttpStatus.OK).json({ data: deleteCardById, error: null });
         } catch (error) {
@@ -110,7 +111,7 @@ export class CardController {
         @Param('id') id: string,
         @Req() req: Request,
         @Body() createUserDto: CreateCardDto,
-        @Res() res: Response,
+        @Res() res: Response
     ): Promise<Response> {
         try {
             const username: string = req.user.username;
@@ -121,8 +122,9 @@ export class CardController {
             }
             await this._notifyService.notify({
                 text: `Статус карточки под номером ${id.toString().slice(-4)} был изменен на ${updateCardById.status}`,
-                title: updateCardById.description,
                 author: username,
+                cardId: `${id.toString().slice(-4)}`,
+                title: updateCardById.description
             });
             return res.status(HttpStatus.OK).json({ data: updateCardById, error: null });
         } catch (error) {
