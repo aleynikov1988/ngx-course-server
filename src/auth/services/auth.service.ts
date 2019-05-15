@@ -99,6 +99,9 @@ export class AuthService {
 
     // tslint:disable-next-line: no-any
     public async devicesUser(id: string, userForUpdate: any): Promise<IUser | null> {
-        return await this._userModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) }, { $set: userForUpdate });
+        return await this._userModel
+            .findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) }, { $set: userForUpdate }, { new: true })
+            .lean()
+            .exec();
     }
 }

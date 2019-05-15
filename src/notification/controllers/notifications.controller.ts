@@ -109,7 +109,7 @@ export class NotificationController {
             tableData = tableData.filter((i: any) => i);
             return res
                 .status(HttpStatus.OK)
-                .json({ data: { table: tableData || [], page, length: allData.length }, error: null });
+                .json({ data: { table: tableData || [], page, length: tableData.length }, error: null });
         } catch (error) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: error.message });
         }
