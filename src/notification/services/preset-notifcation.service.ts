@@ -85,8 +85,6 @@ export class PresetNotificationsLogService {
     public async getNotifyForTable(page: number, perPage: number): Promise<INotificationLog[] | null> {
         return await this._notificationLogModel
             .find()
-            .skip(page * perPage)
-            .limit(perPage)
             .sort({ date: -1 })
             .lean()
             .exec();
