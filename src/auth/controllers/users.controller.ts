@@ -2,7 +2,7 @@ import { Controller, HttpStatus, Post, Put, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Body } from '@nestjs/common/decorators/http/route-params.decorator';
 import { AuthService } from '../services/auth.service';
-import { IUser, User } from '../schemas/user.schema';
+import { IAddress, User } from '../schemas/user.schema';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
 
@@ -21,7 +21,7 @@ export class UserController {
         try {
             const username: string = req.user.username;
             const { oldPass, pass } = updateUserDto;
-
+            const {index} = updateUserDto;
             const user: User = await this._authService.getUserWithToken({ username });
             // tslint:disable-next-line:no-any
             let newUser: any;
@@ -34,15 +34,23 @@ export class UserController {
                 }
                 hash = pass && (await bcrypt.hash(pass, 10));
             }
-            newUser = {
-                ...user,
-                username,
-                surname: updateUserDto.surname,
-                name: updateUserDto.name,
-                adress: updateUserDto.adress,
-                password: hash ? hash : user.password,
-                gender: updateUserDto.gender,
-            };
+            if (typeof index !== 'number') {
+                newUser = {
+                    ...user,
+                    username,
+                    surname: updateUserDto.surname,
+                    name: updateUserDto.name,
+                    address: updateUserDto.address,
+                    password: hash ? hash : user.password,
+                    gender: updateUserDto.gender,
+                };
+            } else {
+                newUser = {
+                    ...user,
+                    username,
+                    address: user.address.filter((adress: IAddress, i: number ) => index !== i),
+                };
+            }
             const updateUser: User = await this._authService.updateUser(newUser);
             if (!updateUser) {
                 throw new Error('unable to update user');

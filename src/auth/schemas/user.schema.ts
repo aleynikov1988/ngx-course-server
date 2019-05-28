@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-export const adressSchema: mongoose.Schema = new mongoose.Schema({
+export const addressSchema: mongoose.Schema = new mongoose.Schema({
     street: {
         type: String,
         required: false,
@@ -53,7 +53,7 @@ export const userSchema: mongoose.Schema = new mongoose.Schema(
             type: String,
             required: false,
         },
-        adress: [adressSchema],
+        address: [addressSchema],
         surname: {
             type: String,
             required: false,
@@ -75,10 +75,10 @@ export type User = {
     devices?: string;
     accessToken?: string;
     gender: boolean;
-    adress: IAdress[];
+    address: IAddress[];
 };
 
-export type IAdress = {
+export type IAddress = {
     street: string;
     city: string;
     state: string;

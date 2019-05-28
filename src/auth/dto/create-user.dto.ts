@@ -11,5 +11,5 @@ export class CreateUserDto {
     @ApiModelProperty()
     public accessToken!: string;
     @ApiModelProperty({required: false})
-    public adress?: User[];
+    public address?: User[];
 }
