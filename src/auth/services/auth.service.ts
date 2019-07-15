@@ -1,13 +1,16 @@
+import { IProduct } from './../schemas/product.schema';
 import * as jwt from 'jsonwebtoken';
 import { Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { IUser, User } from '../schemas/user.schema';
 import { ConfigService } from '../../config.service';
+import { Product } from '../schemas/product.schema';
 
 @Injectable()
 export class AuthService {
     public constructor(
         @Inject('UserModelToken') private readonly _userModel: mongoose.Model<IUser>,
+        @Inject('ProductModelToken') private readonly _productModel: mongoose.Model<IProduct>,
         private readonly _config: ConfigService
     ) {}
 
@@ -74,33 +77,16 @@ export class AuthService {
             .exec();
     }
 
-    // tslint:disable-next-line: no-any
-    public async getUsers(query: any): Promise<User[] | null> {
-        return await this._userModel
-            .find(query, { _id: 1 })
+    public async getAllProducts(): Promise<Product[] | null> {
+        return await this._productModel
+            .find()
             .lean()
             .exec();
     }
-
-    public async getUsersByIds(
-        idList: mongoose.Types.ObjectId[],
-        // tslint:disable-next-line:no-any
-        projection: any = {}
-    ): Promise<IUser[]> {
-        let query: {} = {};
-        if (idList.length) {
-            query = { _id: { $in: idList } };
-        }
-        return await this._userModel
-            .find(query, projection)
-            .lean()
-            .exec();
-    }
-
     // tslint:disable-next-line: no-any
-    public async devicesUser(id: string, userForUpdate: any): Promise<IUser | null> {
-        return await this._userModel
-            .findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) }, { $set: userForUpdate }, { new: true })
+    public async getProductById(query: any): Promise<Product | null> {
+        return await this._productModel
+            .findOne({_id: query})
             .lean()
             .exec();
     }

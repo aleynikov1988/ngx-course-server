@@ -11,6 +11,23 @@ import * as bcrypt from 'bcrypt';
 export class UserController {
     public constructor(private readonly _authService: AuthService) {}
 
+    @Post('checkuser')
+    @ApiOperation({ title: 'User sign in' })
+    @ApiResponse({ status: HttpStatus.CREATED, description: 'User with token' })
+    @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Wrong login or password' })
+    // tslint:disable-next-line:no-any
+    public async checkUser(@Body() loginUserDto: any, @Res() res: Response): Promise<Response> {
+        try {
+            const { token } = loginUserDto;
+            if (!token) {
+                throw Error('no token');
+            }
+            const user: User = await this._authService.getUserWithToken({ accessToken: token });
+            return res.status(HttpStatus.OK).json({ data: user, error: null });
+        } catch (error) {
+            return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'Invalid username and/or password' });
+        }
+    }
 
     @Put('updateuser')
     @ApiOperation({ title: 'Update user' })
@@ -21,7 +38,7 @@ export class UserController {
         try {
             const username: string = req.user.username;
             const { oldPass, pass } = updateUserDto;
-            const {index} = updateUserDto;
+            const { index } = updateUserDto;
             const user: User = await this._authService.getUserWithToken({ username });
             // tslint:disable-next-line:no-any
             let newUser: any;
@@ -48,7 +65,7 @@ export class UserController {
                 newUser = {
                     ...user,
                     username,
-                    address: user.address.filter((adress: IAddress, i: number ) => index !== i),
+                    address: user.address.filter((address: IAddress, i: number) => index !== i),
                 };
             }
             const updateUser: User = await this._authService.updateUser(newUser);
@@ -58,25 +75,6 @@ export class UserController {
             return res.status(HttpStatus.OK).json({ data: updateUser, error: null });
         } catch (error) {
             return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: error.message });
-        }
-    }
-
-    @Post('checkPassword')
-    // tslint:disable-next-line:no-any
-    public async checkPass(@Body() updateUserDto: any, @Res() res: Response, @Req() req: Request): Promise<Response> {
-        try {
-            const username: string = req.user.username;
-            const user: User = await this._authService.getUserWithToken({ username });
-            let isCurrentPasswordValid: boolean;
-            if (updateUserDto.data) {
-                isCurrentPasswordValid = await bcrypt.compare(updateUserDto.data, user.password as string);
-                if (!isCurrentPasswordValid) {
-                    return res.status(HttpStatus.OK).json({ 'Вы ввели не верный пароль': true });
-                }
-            }
-            return res.status(HttpStatus.OK).json({ data: null });
-        } catch (e) {
-            return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: 'No user' });
         }
     }
 }
