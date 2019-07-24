@@ -12,6 +12,8 @@ services:
     environment:
       - COMPOSE_HTTP_TIMEOUT=300
     tty: true
+    depends_on:
+      - mongodb
     networks:
       -  course-app-network
 
@@ -22,6 +24,13 @@ services:
       - 27017:27017
     networks:
       - course-app-network
+
+  mongo-seed:
+    build: docker/mongo-seed
+    networks:
+      - course-app-network
+    depends_on:
+      - mongodb
 
 networks:
   course-app-network:

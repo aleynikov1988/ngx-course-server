@@ -28,7 +28,7 @@ export const productSchema: mongoose.Schema = new mongoose.Schema(
             required: true,
         },
     },
-    { collection: 'product' }
+    { collection: 'products' }
 );
 
 export type Product = {

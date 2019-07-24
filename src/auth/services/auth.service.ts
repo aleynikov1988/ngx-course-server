@@ -11,8 +11,9 @@ export class AuthService {
     public constructor(
         @Inject('UserModelToken') private readonly _userModel: mongoose.Model<IUser>,
         @Inject('ProductModelToken') private readonly _productModel: mongoose.Model<IProduct>,
-        private readonly _config: ConfigService
-    ) {}
+        private readonly _config: ConfigService,
+    ) {
+    }
 
     public async createToken(user: IUser): Promise<User> {
         const secret: string = this._config.get('secret');
@@ -83,10 +84,11 @@ export class AuthService {
             .lean()
             .exec();
     }
+
     // tslint:disable-next-line: no-any
-    public async getProductById(query: any): Promise<Product | null> {
+    public async getProductById({ id: _id }: any): Promise<Product | null> {
         return await this._productModel
-            .findOne({_id: query})
+            .findOne({ _id })
             .lean()
             .exec();
     }
