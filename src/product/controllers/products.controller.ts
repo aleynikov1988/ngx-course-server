@@ -1,14 +1,14 @@
 import { Controller, Get, HttpStatus, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { Body, Param } from '@nestjs/common/decorators/http/route-params.decorator';
-import { AuthService } from '../services/auth.service';
+import { Param } from '@nestjs/common/decorators/http/route-params.decorator';
+import { ProductService } from '../services/product.service';
 import { ApiBearerAuth, ApiImplicitParam, ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
 import { Product } from '../schemas/product.schema';
 
 @ApiUseTags('products')
 @Controller('products')
 export class ProductController {
-    public constructor(private readonly _authService: AuthService) {}
+    public constructor(private readonly _productService: ProductService) {}
 
     @Get('')
     @ApiBearerAuth()
@@ -21,7 +21,7 @@ export class ProductController {
     public async getProducts(@Req() req: Request, @Res() res: Response): Promise<Response> {
         try {
             // tslint:disable-next-line:no-any
-            const products: any = await this._authService.getAllProducts();
+            const products: any = await this._productService.getAllProducts();
             return res.status(HttpStatus.OK).json({ data: products });
         } catch (error) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: null });
@@ -34,7 +34,6 @@ export class ProductController {
     @ApiResponse({ status: HttpStatus.OK })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
-
     public async getProductById(
         @Req() req: Request,
         @Res() res: Response,
@@ -42,7 +41,7 @@ export class ProductController {
     ): Promise<Response> {
         try {
             const { id } = param;
-            const product: Product | null = await this._authService.getProductById({ id });
+            const product: Product | null = await this._productService.getProductById({ id });
             return res.status(HttpStatus.OK).json({ data: product, error: null });
         } catch (error) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error });

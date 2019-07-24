@@ -1,19 +1,15 @@
-import { IProduct } from './../schemas/product.schema';
 import * as jwt from 'jsonwebtoken';
 import { Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
-import { IUser, User } from '../schemas/user.schema';
 import { ConfigService } from '../../config.service';
-import { Product } from '../schemas/product.schema';
+import { IUser, User } from '../schemas/user.schema';
 
 @Injectable()
 export class AuthService {
     public constructor(
         @Inject('UserModelToken') private readonly _userModel: mongoose.Model<IUser>,
-        @Inject('ProductModelToken') private readonly _productModel: mongoose.Model<IProduct>,
-        private readonly _config: ConfigService,
-    ) {
-    }
+        private readonly _config: ConfigService
+    ) {}
 
     public async createToken(user: IUser): Promise<User> {
         const secret: string = this._config.get('secret');
@@ -77,18 +73,10 @@ export class AuthService {
             .lean()
             .exec();
     }
-
-    public async getAllProducts(): Promise<Product[] | null> {
-        return await this._productModel
-            .find()
-            .lean()
-            .exec();
-    }
-
-    // tslint:disable-next-line: no-any
-    public async getProductById({ id: _id }: any): Promise<Product | null> {
-        return await this._productModel
-            .findOne({ _id })
+    // tslint:disable-next-line:no-any
+    public async getUsers(query: any): Promise<User[] | null> {
+        return await this._userModel
+            .find(query, { _id: 1 })
             .lean()
             .exec();
     }

@@ -1,22 +1,21 @@
-import { CreateUserDto } from '../dto/create-user.dto';
+import { UserDto } from '../dto/user.dto';
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
-import { IUser, User } from '../schemas/user.schema';
 import { AuthService } from '../services/auth.service';
-import { ConfigService } from '../../config.service';
+import { IUser, User } from '../schemas/user.schema';
 
 @ApiUseTags('auth')
 @Controller('auth')
 export class AuthController {
-    public constructor(private readonly _authService: AuthService, private readonly _config: ConfigService) {}
+    public constructor(private readonly _authService: AuthService) {}
 
     @Post('signup')
     @ApiOperation({ title: 'User sign up (create user)' })
-    @ApiResponse({ status: HttpStatus.CREATED, description: 'The record has been successfully created.' })
-    @ApiResponse({ status: HttpStatus.CONFLICT, description: 'The record already exists' })
-    public async signUp(@Body() createUserDto: CreateUserDto, @Res() res: Response): Promise<Response> {
+    @ApiResponse({ status: HttpStatus.OK, description: 'The record has been successfully created.' })
+    @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'The record already exists' })
+    public async signUp(@Body() createUserDto: UserDto, @Res() res: Response): Promise<Response> {
         try {
             const { username, email } = createUserDto;
             const user: IUser | null = await this._authService.getUser({ $or: [{ username }, { email }] });
@@ -42,8 +41,9 @@ export class AuthController {
 
     @Post('signin')
     @ApiOperation({ title: 'User sign in' })
-    @ApiResponse({ status: HttpStatus.CREATED, description: 'User with token' })
-    @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Wrong login or password' })
+    @ApiResponse({ status: HttpStatus.OK })
+    @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Wrong username or password' })
+    @ApiResponse({ status: HttpStatus.BAD_REQUEST })
     // tslint:disable-next-line:no-any
     public async signIn(@Body() loginUserDto: any, @Res() res: Response): Promise<Response> {
         try {
@@ -60,5 +60,20 @@ export class AuthController {
             return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'Invalid username and/or password' });
         }
     }
-
+    @Post('checkUsername')
+    @ApiOperation({ title: 'Username existence validation' })
+    @ApiResponse({ status: HttpStatus.OK })
+    @ApiResponse({ status: HttpStatus.BAD_REQUEST })
+    // tslint:disable-next-line:no-any
+    public async checkUsername(@Body() updateUserDto: any, @Res() res: Response): Promise<Response> {
+        try {
+            const users: User[] = await this._authService.getUsers({ username: updateUserDto.username });
+            if (users && users.length > 0) {
+                return res.status(HttpStatus.OK).json({ 'Имя пользователя занято': true });
+            }
+            return res.status(HttpStatus.OK).json({ data: null });
+        } catch (e) {
+            return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: 'No user' });
+        }
+    }
 }

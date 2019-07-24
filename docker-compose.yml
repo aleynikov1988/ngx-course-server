@@ -31,7 +31,6 @@ services:
       - course-app-network
     depends_on:
       - mongodb
-
 networks:
   course-app-network:
    external: true
