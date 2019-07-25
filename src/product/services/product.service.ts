@@ -14,7 +14,6 @@ export class ProductService {
             .exec();
     }
 
-    // tslint:disable-next-line: no-any
     public async getProductById(_id: string): Promise<Product | null> {
         return await this._productModel
             .findOne({ _id })
