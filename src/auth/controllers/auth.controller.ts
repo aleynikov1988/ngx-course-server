@@ -17,8 +17,8 @@ export class AuthController {
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'The record already exists' })
     public async signUp(@Body() createUserDto: UserDto, @Res() res: Response): Promise<Response> {
         try {
-            const { username, email } = createUserDto;
-            const user: IUser | null = await this._authService.getUser({ $or: [{ username }, { email }] });
+            const { username } = createUserDto;
+            const user: IUser | null = await this._authService.getUser({ username });
             if (user) {
                 return res
                     .status(HttpStatus.CONFLICT)
@@ -46,7 +46,7 @@ export class AuthController {
     public async signIn(@Body() loginUserDto: LoginDto, @Res() res: Response): Promise<Response> {
         try {
             const { username, password: lpassword } = loginUserDto;
-            const { password, ...user }: User = await this._authService.getUserWithToken({ username });
+            const { password, ...user }: User = await this._authService.getUser({ username });
             if (!user || (user && !(await bcrypt.compare(lpassword, password)))) {
                 return res.status(HttpStatus.UNAUTHORIZED).json({
                     data: null,

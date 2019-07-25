@@ -40,7 +40,7 @@ export class AuthService {
         return true;
     }
 
-    public async createUser(createUserDto: CreateUserDto): Promise<IUser> {
+    public async createUser(createUserDto: Partial<User>): Promise<IUser> {
         return await this._userModel.create(createUserDto);
     }
 
@@ -57,7 +57,7 @@ export class AuthService {
             .exec();
     }
 
-    public async getUsers(query: User): Promise<User[] | null> {
+    public async getUsers(query: Partial<User>): Promise<User[] | null> {
         return await this._userModel
             .find(query, { _id: 1 })
             .lean()
