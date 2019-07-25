@@ -15,7 +15,7 @@ export class ProductService {
     }
 
     // tslint:disable-next-line: no-any
-    public async getProductById({ id: _id }: any): Promise<Product | null> {
+    public async getProductById(_id: string): Promise<Product | null> {
         return await this._productModel
             .findOne({ _id })
             .lean()

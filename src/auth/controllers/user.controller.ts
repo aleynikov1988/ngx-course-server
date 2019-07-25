@@ -17,14 +17,13 @@ export class UserController {
     @ApiResponse({ status: HttpStatus.OK })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST })
-    // tslint:disable-next-line:no-any
-    public async checkUser(@Body() loginUserDto: any, @Res() res: Response): Promise<Response> {
+    public async checkUser(@Body() loginUserDto: { token: string }, @Res() res: Response): Promise<Response> {
         try {
             const { token } = loginUserDto;
             if (!token) {
                 return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'UNAUTHORIZED' });
             }
-            const user: User = await this._authService.getUserWithToken({ accessToken: token });
+            const user: User = await this._authService.getUser({ accessToken: token });
             return res.status(HttpStatus.OK).json({ data: user, error: null });
         } catch (error) {
             return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'UNAUTHORIZED' });
@@ -46,9 +45,8 @@ export class UserController {
             const username: string = req.user.username;
             const { oldPass, pass } = updateUserDto;
             const { index } = updateUserDto;
-            const user: User = await this._authService.getUserWithToken({ username });
-            // tslint:disable-next-line:no-any
-            let newUser: any;
+            const user: User = await this._authService.getUser({ username });
+            let newUser: User;
             let hash: string | undefined;
             let isCurrentPasswordValid: boolean;
             if (oldPass) {
@@ -66,7 +64,7 @@ export class UserController {
                     name: updateUserDto.name,
                     address: updateUserDto.address,
                     password: hash ? hash : user.password,
-                    gender: updateUserDto.gender,
+                    gender: !!updateUserDto.gender,
                 };
             } else {
                 newUser = {

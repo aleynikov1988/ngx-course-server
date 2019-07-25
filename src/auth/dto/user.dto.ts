@@ -1,11 +1,18 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { User } from '../schemas/user.schema';
+import { IAddress, User } from '../schemas/user.schema';
 
 export class UserDto {
     @ApiModelProperty()
     public readonly username!: string;
     @ApiModelProperty()
     public readonly email!: string;
+    @ApiModelProperty()
+    public password!: string;
+}
+// tslint:disable-next-line:max-classes-per-file
+export class LoginDto {
+    @ApiModelProperty()
+    public readonly username!: string;
     @ApiModelProperty()
     public password!: string;
 }
@@ -24,5 +31,5 @@ export class UpdateUserDto {
     @ApiModelProperty()
     public index?: string | number;
     @ApiModelProperty({ required: false })
-    public address?: User[];
+    public address?: IAddress[];
 }

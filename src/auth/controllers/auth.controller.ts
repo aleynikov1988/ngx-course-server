@@ -1,4 +1,4 @@
-import { UserDto } from '../dto/user.dto';
+import { LoginDto, UpdateUserDto, UserDto } from '../dto/user.dto';
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -25,8 +25,7 @@ export class AuthController {
                     .json({ data: null, error: 'Invalid username or email already exists' });
             }
             const hash: string = await bcrypt.hash(createUserDto.password, 10);
-            // tslint:disable-next-line:no-any
-            let userForCreate: any = {
+            let userForCreate: UserDto = {
                 ...createUserDto,
                 password: hash,
             };
@@ -44,8 +43,7 @@ export class AuthController {
     @ApiResponse({ status: HttpStatus.OK })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Wrong username or password' })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST })
-    // tslint:disable-next-line:no-any
-    public async signIn(@Body() loginUserDto: any, @Res() res: Response): Promise<Response> {
+    public async signIn(@Body() loginUserDto: LoginDto, @Res() res: Response): Promise<Response> {
         try {
             const { username, password: lpassword } = loginUserDto;
             const { password, ...user }: User = await this._authService.getUserWithToken({ username });
@@ -64,8 +62,7 @@ export class AuthController {
     @ApiOperation({ title: 'Username existence validation' })
     @ApiResponse({ status: HttpStatus.OK })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST })
-    // tslint:disable-next-line:no-any
-    public async checkUsername(@Body() updateUserDto: any, @Res() res: Response): Promise<Response> {
+    public async checkUsername(@Body() updateUserDto: { username: string }, @Res() res: Response): Promise<Response> {
         try {
             const users: User[] = await this._authService.getUsers({ username: updateUserDto.username });
             if (users && users.length > 0) {

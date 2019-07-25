@@ -15,13 +15,13 @@ export class JwtStrategy extends Strategy {
                 passReqToCallback: true,
                 secretOrKey: _config.get('secret'),
             },
-            // tslint:disable-next-line:no-any
-            async (req: Request, payload: any, next: NextFunction) => await this.verify(req, payload, next)
+            async (req: Request, payload: { username: string }, next: NextFunction) =>
+                await this.verify(req, payload, next)
         );
         passport.use(this);
     }
     // tslint:disable-next-line:no-any
-    public async verify(_req: Request, payload: any, done: VerifiedCallback): Promise<void> {
+    public async verify(_req: Request, payload: { username: string }, done: VerifiedCallback): Promise<void> {
         const isValid: boolean = await this._authService.validateUser(payload.username);
 
         if (!isValid) {

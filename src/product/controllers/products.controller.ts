@@ -16,12 +16,9 @@ export class ProductController {
     @ApiResponse({ status: HttpStatus.OK })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
-
-    // tslint:disable-next-line:max-line-length
     public async getProducts(@Req() req: Request, @Res() res: Response): Promise<Response> {
         try {
-            // tslint:disable-next-line:no-any
-            const products: any = await this._productService.getAllProducts();
+            const products: Product[] = await this._productService.getAllProducts();
             return res.status(HttpStatus.OK).json({ data: products });
         } catch (error) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error: null });
@@ -41,7 +38,7 @@ export class ProductController {
     ): Promise<Response> {
         try {
             const { id } = param;
-            const product: Product | null = await this._productService.getProductById({ id });
+            const product: Product | null = await this._productService.getProductById(id);
             return res.status(HttpStatus.OK).json({ data: product, error: null });
         } catch (error) {
             return res.status(HttpStatus.BAD_REQUEST).json({ data: null, error });

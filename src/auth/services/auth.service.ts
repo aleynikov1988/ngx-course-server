@@ -3,6 +3,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { ConfigService } from '../../config.service';
 import { IUser, User } from '../schemas/user.schema';
+import { UpdateUserDto, UserDto } from '../dto/user.dto';
+import { CreateUserDto } from '../../../dist/auth/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +13,7 @@ export class AuthService {
         private readonly _config: ConfigService
     ) {}
 
-    public async createToken(user: IUser): Promise<User> {
+    public async createToken(user: UserDto): Promise<User> {
         const secret: string = this._config.get('secret');
         const { username } = user;
 
@@ -38,43 +40,24 @@ export class AuthService {
         return true;
     }
 
-    // tslint:disable-next-line: no-any
-    public async createUser(createUserDto: any): Promise<IUser> {
+    public async createUser(createUserDto: CreateUserDto): Promise<IUser> {
         return await this._userModel.create(createUserDto);
     }
 
-    // tslint:disable-next-line: no-any
-    public async updateUser(createUserDto: any): Promise<IUser | null> {
+    public async updateUser(createUserDto: User): Promise<IUser | null> {
         return await this._userModel.findOneAndUpdate({ username: createUserDto.username }, createUserDto, {
             new: true,
         });
     }
 
-    // tslint:disable-next-line
-    public async getUser(query: any, projection: {} = {}): Promise<IUser | null> {
-        let user: IUser | null;
-        try {
-            user = await this._userModel
-                .findOne(query, projection)
-                .lean()
-                .exec();
-        } catch (err) {
-            // tslint:disable-next-line
-            console.log(err);
-            user = null;
-        }
-        return user;
-    }
-
-    // tslint:disable-next-line: no-any
-    public async getUserWithToken(query: any): Promise<User> {
+    public async getUser(query: Partial<User>): Promise<IUser | null> {
         return await this._userModel
             .findOne(query)
             .lean()
             .exec();
     }
-    // tslint:disable-next-line:no-any
-    public async getUsers(query: any): Promise<User[] | null> {
+
+    public async getUsers(query: User): Promise<User[] | null> {
         return await this._userModel
             .find(query, { _id: 1 })
             .lean()
