@@ -4,27 +4,22 @@ export const productSchema: mongoose.Schema = new mongoose.Schema(
     {
         title: {
             type: String,
-            unique: true,
             required: true,
         },
         img: {
             type: String,
-            unique: true,
             required: true,
         },
         price: {
             type: Number,
-            unique: true,
             required: true,
         },
         author: {
             type: String,
-            unique: true,
             required: true,
         },
         isFavorite: {
             type: Boolean,
-            unique: true,
             required: true,
         },
     },

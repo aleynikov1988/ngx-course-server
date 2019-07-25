@@ -3,15 +3,15 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { ConfigService } from '../../config.service';
 import { IUser, User } from '../schemas/user.schema';
-import { UpdateUserDto, UserDto } from '../dto/user.dto';
-import { CreateUserDto } from '../../../dist/auth/dto/create-user.dto';
+import { UserDto } from '../dto/user.dto';
 
 @Injectable()
 export class AuthService {
     public constructor(
         @Inject('UserModelToken') private readonly _userModel: mongoose.Model<IUser>,
-        private readonly _config: ConfigService
-    ) {}
+        private readonly _config: ConfigService,
+    ) {
+    }
 
     public async createToken(user: UserDto): Promise<User> {
         const secret: string = this._config.get('secret');
@@ -45,9 +45,10 @@ export class AuthService {
     }
 
     public async updateUser(createUserDto: User): Promise<IUser | null> {
-        return await this._userModel.findOneAndUpdate({ username: createUserDto.username }, createUserDto, {
-            new: true,
-        });
+        return this._userModel.findOneAndUpdate(
+            { username: createUserDto.username }, createUserDto, {
+                new: true,
+            });
     }
 
     public async getUser(query: Partial<User>): Promise<IUser | null> {
