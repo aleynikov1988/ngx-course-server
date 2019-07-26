@@ -1,7 +1,7 @@
-import { Controller, HttpStatus, Post, Put, Req, Res } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Post, Put, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Body } from '@nestjs/common/decorators/http/route-params.decorator';
-import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiImplicitBody, ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from '../services/auth.service';
 import { IAddress, User } from '../schemas/user.schema';
@@ -12,18 +12,19 @@ import { UpdateUserDto } from '../dto/user.dto';
 export class UserController {
     public constructor(private readonly _authService: AuthService) {}
 
-    @Post('checkuser')
+    @Get('checkuser')
     @ApiOperation({ title: 'Validate user token' })
     @ApiResponse({ status: HttpStatus.OK })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST })
-    public async checkUser(@Body() loginUserDto: { token: string }, @Res() res: Response): Promise<Response> {
+    @ApiBearerAuth()
+    public async checkUser(@Res() res: Response, @Req() req: Request): Promise<Response> {
         try {
-            const { token } = loginUserDto;
-            if (!token) {
+            const username: string = req.user.username;
+            if (!username) {
                 return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'UNAUTHORIZED' });
             }
-            const user: User = await this._authService.getUser({ accessToken: token });
+            const user: User = await this._authService.getUser({ username });
             return res.status(HttpStatus.OK).json({ data: user, error: null });
         } catch (error) {
             return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'UNAUTHORIZED' });
@@ -35,6 +36,7 @@ export class UserController {
     @ApiResponse({ status: HttpStatus.OK })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST })
+    @ApiBearerAuth()
     // tslint:disable-next-line:no-any
     public async updateUser(
         @Body() updateUserDto: UpdateUserDto,
