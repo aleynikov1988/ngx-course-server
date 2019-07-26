@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node
 
 #RUN apk add --no-cache bash    // this for alpin
 
