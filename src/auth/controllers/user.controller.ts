@@ -20,7 +20,7 @@ export class UserController {
     @ApiBearerAuth()
     public async checkUser(@Res() res: Response, @Req() req: Request): Promise<Response> {
         try {
-            const username: string = req.user.username;
+            const username: string = (req.user as User).username;
             if (!username) {
                 return res.status(HttpStatus.UNAUTHORIZED).json({ data: null, error: 'UNAUTHORIZED' });
             }
@@ -37,14 +37,14 @@ export class UserController {
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST })
     @ApiBearerAuth()
-    // tslint:disable-next-line:no-any
+
     public async updateUser(
         @Body() updateUserDto: UpdateUserDto,
         @Res() res: Response,
         @Req() req: Request
     ): Promise<Response> {
         try {
-            const username: string = req.user.username;
+            const username: string = (req.user as User).username;
             const { oldPass, pass } = updateUserDto;
             const { index } = updateUserDto;
             const user: User = await this._authService.getUser({ username });

@@ -1,8 +1,8 @@
 import { Connection } from 'mongoose';
 import { productSchema } from './schemas/product.schema';
+import { Provider } from '@nestjs/common';
 
-// tslint:disable-next-line: no-any
-export const productProviders: any = [
+export const productProviders: Provider[] = [
   {
     provide: 'ProductModelToken',
     useFactory: (connection: Connection) => connection.model('ProductModel', productSchema),

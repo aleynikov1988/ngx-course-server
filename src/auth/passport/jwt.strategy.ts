@@ -20,7 +20,7 @@ export class JwtStrategy extends Strategy {
         );
         passport.use(this);
     }
-    // tslint:disable-next-line:no-any
+
     public async verify(_req: Request, payload: { username: string }, done: VerifiedCallback): Promise<void> {
         const isValid: boolean = await this._authService.validateUser(payload.username);
 

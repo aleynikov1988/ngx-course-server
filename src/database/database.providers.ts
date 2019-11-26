@@ -1,7 +1,8 @@
 import * as mongoose from 'mongoose';
 import { ConfigService } from '../config.service';
-// tslint:disable-next-line: no-any
-export const databaseProviders: any = [
+import { Provider } from '@nestjs/common';
+
+export const databaseProviders: Provider[] = [
     {
         provide: 'DbConnectionToken',
         useFactory: async (config: ConfigService): Promise<mongoose.Connection> => {
